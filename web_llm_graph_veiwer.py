@@ -6,6 +6,12 @@ from langchain.document_loaders import PyPDFLoader
 import cohere
 import tempfile
 import os
+import requests
+
+headers = {
+    "authorization" : st.secrets["auth_token"],
+    "content-typer" : "application/json"
+}
 
 # Initialize Cohere client
 co = cohere.Client("YOUR_COHERE_API_KEY")  # Replace with your real API key
