@@ -13,10 +13,34 @@ st.title("📚 PDF Knowledge Graph Generator")
 
 # Secret headers
 headers = {
-    "Authorization": st.secrets["auth_token"],
+    "Authorization": "Bearer st.secrets["auth_token"],
     "Content-Type": "application/json"
 }
 
+#cohere chat
+def chat(preamble = "" , message)
+  data = {
+    "stream" : True,
+    "message": message,
+    "preamble" : preamble
+ #   "connectors": [{"id": "gdrive-with-oauth-18fbc3"}]
+    }
+
+  response = requests.post(url , headers = headers , data = json.dumps(data))
+
+  final_response = ""
+
+  for line in response.iter_lines():
+        if line:
+            decoded_line = line.decode('utf-8')
+            json_data = json.loads(decoded_line)
+
+            if json_data.get("event_type") == "text-generation":
+                final_response += json_data.get("text", "")
+            elif json_data.get("event_type") == "stream-end":
+                break
+  return final_response
+    
 # Upload PDF
 uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
 
@@ -64,18 +88,7 @@ Here is the content to analyze: {content}
 """
 
         # Make Cohere call (if using HTTP request)
-        try:
-            payload = {
-                "message": prompt,
-                "model": "command-xlarge-nightly",
-                "temperature": 0
-            }
-            response = requests.post(
-                "https://api.cohere.ai/v1/chat",
-                headers=headers,
-                json=payload
-            )
-            result_text = response.json()['text']
+        result_text = chat (message , prompt)
 
         except Exception as e:
             st.error("Failed to get a response from Cohere API.")
