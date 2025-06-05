@@ -9,7 +9,7 @@ import requests
 import json
 
 # Streamlit app title
-st.title("📚 PDF Knowledge Graph Generator")
+st.title("📚 PDF Context-Knowledge Graph Generator")
 
 # Define Cohere API URL and headers
 url = "https://api.cohere.ai/v1/chat"  # Update if using a custom endpoint
